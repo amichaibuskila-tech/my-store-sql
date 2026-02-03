@@ -7,7 +7,6 @@ export function Card({ data }) {
             <h2>{data.title}</h2>
             <p>Price: {data.price}</p>
 
-
         </div>
     );
 }

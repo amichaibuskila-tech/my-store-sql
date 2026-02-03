@@ -58,8 +58,11 @@ a {
 
 }
 
-.row{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+.grid{
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+grid-template-rows: repeat(5, 1fr);
+grid-column-gap: 20px;
+grid-row-gap: 10px;
+
 }

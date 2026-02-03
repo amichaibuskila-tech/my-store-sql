@@ -20,7 +20,7 @@ export default function Home() {
         <div className='page-container '>
             <h1>Computer Page</h1>
 
-            <div className="row">
+            <div className="grid">
 
                 {
                     getComputers().map(

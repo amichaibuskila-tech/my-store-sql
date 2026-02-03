@@ -21,7 +21,7 @@ export default function SmartPhone() {
     return (
         <div className="smartphone-page page-container">
             <h1>SmartPhone Page</h1>
-            <div className="row">
+            <div className="grid">
                 {
 
                     phones.map(
