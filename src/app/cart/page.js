@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import  useItemStore  from '@/store/itemstore.js';
-import { Card } from '@/app/components/Card/Card.jsx';
+import { Card } from '@/app/components/Card/Cardforcart.jsx';
 
 export default function Cart() {
 
