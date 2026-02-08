@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { getPhones } from '@/services/data';
 import { Card } from '@/app/components/Card/Card.jsx';
-
+import useStore from '../../store/store.js';
 
 export default function SmartPhone() {
     console.log('RENDER')
     const [phones, setPhones] = useState([]);
+    const count = useStore((state) => state.count);
+    const increment = useStore((state) => state.increment);
+
 
     useEffect(
         () => {
@@ -21,6 +23,8 @@ export default function SmartPhone() {
     return (
         <div className="smartphone-page page-container">
             <h1>SmartPhone Page</h1>
+            <h2>Count: {count} </h2>
+            <button className='my-button' onClick={increment}>Increment</button>
             <div className="grid">
                 {
 

@@ -1,19 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
-import Button from '@/app/components/Button/Button.jsx'
-
+import  useItemStore  from '@/store/itemstore.js';
+import { Card } from '@/app/components/Card/Cardforcart.jsx';
 
 export default function Cart() {
 
-    function aaa() {
-        alert("Hey")
-    }
+    const items = useItemStore((state) => state.items);
 
     return (
+
         <div className='page-container'>
-            <h1>Cart Page</h1>
-            <Button callBack={aaa} />
+
+            <div className="grid">
+                {
+
+                    items.map(
+                        (items, idx) => {
+                            return <Card key={idx} data={items} />
+                        }
+                    )
+                }
+            </div>
         </div>
     );
 }
