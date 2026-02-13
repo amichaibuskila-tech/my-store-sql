@@ -13,7 +13,7 @@ export function Card({ data }) {
         <div className={styles.cardContainer}>
             <h2>{data.title}</h2>
             <p>Price: {data.price}</p>
-            <button onClick={RemovefromCart}>Remove</button>
+            <button className={styles.btn} onClick={RemovefromCart}>Remove</button>
         </div>
     );
 }
