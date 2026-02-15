@@ -8,9 +8,11 @@ import { Card } from '@/app/components/Card/Card.jsx';
 export default function Home() {
 
     useEffect(
-        ()=>{
-            console.log('aaa')
-
+        () => {
+            fetch('/api/items')
+                .then(response  => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error fetching items:', error));
         },
         []
     )
@@ -22,13 +24,13 @@ export default function Home() {
 
             <div className="grid">
 
-                {
+                {/* {
                     getComputers().map(
                         (computer, idx) => {
                             return <Card key={idx} data={computer} />
                         }
                     )
-                }
+                } */}
 
             </div>
 
