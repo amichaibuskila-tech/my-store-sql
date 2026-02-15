@@ -3,7 +3,7 @@ import styles from "./Card.module.css";
 import useItemStore from '@/store/itemstore';
 
 export function Card({ data }) {
-    const addItem = useItemStore((state) => state.removeItem);
+    const removeItem = useItemStore((state) => state.removeItem);
 
     const RemovefromCart = () => {
         removeItem(data);
@@ -13,7 +13,7 @@ export function Card({ data }) {
         <div className={styles.cardContainer}>
             <h2>{data.title}</h2>
             <p>Price: {data.price}</p>
-            <button onClick={RemovefromCart}>Remove</button>
+            <button className={styles.btn} onClick={RemovefromCart}>Remove</button>
         </div>
     );
 }
