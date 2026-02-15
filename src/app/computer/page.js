@@ -1,18 +1,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { getComputers } from '@/services/data.js';
+// import { getComputers } from '@/services/data.js';
 import { Card } from '@/app/components/Card/Card.jsx';
 
 
 export default function Home() {
+    const [items, setItems] = useState([]);
 
     useEffect(
         () => {
             fetch('/api/items')
-                .then(response  => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error fetching items:', error));
+                .then(res => res.json())
+                .then(data => setItems(data))
+                .catch(err => console.error(err));
         },
         []
     )
