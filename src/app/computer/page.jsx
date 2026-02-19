@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/app/components/Card/Card.jsx';
 import { getComputers } from '@/services/compProd.js';
+import { getItemsByCategory } from '@/services/itemsClient.js';
 
 
 export default function Home() {
     const [items, setItems] = useState([]);
 
-    useEffect(() => { getComputers().then(res => setItems(res)) }, [])
+    useEffect(() => { getItemsByCategory('electric').then(res => setItems(res)) }, [])
 
     return (
         <div className='page-container '>
