@@ -25,13 +25,12 @@ export default function Home() {
 
             <div className="grid">
 
-                {/* {
-                    getComputers().map(
-                        (computer, idx) => {
-                            return <Card key={idx} data={computer} />
-                        }
-                    )
-                } */}
+                {items.map(
+                    (item, idx) => {
+                        return <Card key={idx} data={item} />
+                    }
+                )}
+            
 
             </div>
 

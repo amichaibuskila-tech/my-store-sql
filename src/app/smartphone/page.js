@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/app/components/Card/Card.jsx';
-import useStore from '../../store/store.js';
 
 export default function SmartPhone() {
     console.log('RENDER')
