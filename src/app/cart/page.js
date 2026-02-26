@@ -7,7 +7,7 @@ import { Card } from '@/app/components/Card/Cardforcart.jsx';
 export default function Cart() {
 
     const items = useItemStore((state) => state.items);
-
+    console.log("cart");
     return (
 
         <div className='page-container'>

@@ -7,7 +7,7 @@ import { getItemsByCategory } from '@/services/itemsClient.js';
 export default function SmartPhone() {
     const [items, setItems] = useState([]);
 
-    useEffect(() => { getItemsByCategory('electric').then(res => setItems(res)) }, [])
+    useEffect(() => { getItemsByCategory('phones').then(res => setItems(res)) }, [])
 
 
 
