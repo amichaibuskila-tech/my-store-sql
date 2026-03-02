@@ -3,14 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/app/components/Card/Card.jsx';
 import { getItemsByCategory } from '@/services/itemsClient.js';
+import { useCustomHook } from '@/hooks/useMyState.js';
 
 export default function SmartPhone() {
     const [items, setItems] = useState([]);
 
     useEffect(() => { getItemsByCategory('phones').then(res => setItems(res)) }, [])
-
-
-
 
     return (
         <div className="smartphone-page page-container">
