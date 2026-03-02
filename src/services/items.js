@@ -16,3 +16,24 @@ export async function getItemsByCategory(name) {
   const collection = db.collection(COLLECTION_NAME);
   return collection.find({ category: name }).toArray();
 }
+
+export async function createItem(item) {
+  const client = await clientPromise;
+  const db = client.db(DB_NAME);
+  const collection = db.collection(COLLECTION_NAME);
+  return collection.insertOne(item);
+}
+
+export async function deleteItem(id) {
+  const client = await clientPromise;
+  const db = client.db(DB_NAME);
+  const collection = db.collection(COLLECTION_NAME);
+  return collection.deleteOne({ _id: id });
+}
+
+export async function updateItem(id, updatedData) {
+  const client = await clientPromise;
+  const db = client.db(DB_NAME);
+  const collection = db.collection(COLLECTION_NAME);
+  return collection.updateOne({ _id: id }, { $set: updatedData });
+}

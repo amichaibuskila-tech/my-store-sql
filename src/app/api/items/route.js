@@ -1,4 +1,4 @@
-import { getAllItems, getItemsByCategory } from '@/services/items';
+import { getAllItems, getItemsByCategory, deleteItem } from '@/services/items';
 import { NextResponse } from 'next/server';
 
 // export async function GET() {
@@ -33,3 +33,17 @@ export async function GET(request) {
     }
 }
 
+export async function DELETE(request) {
+    const body = await request.json();
+    const id = body.id;
+    
+    if (!id) {
+        return new NextResponse(JSON.stringify({ error: 'id is required' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+    
+    await deleteItem(id);
+    return new NextResponse(null, { status: 204 });
+}
