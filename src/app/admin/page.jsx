@@ -4,10 +4,10 @@ import React, { useState, useEffect, use } from 'react';
 import { Table } from 'antd';
 
 const handleDelete = async (id) => {
-
-  await fetch(`api/deleteItem/${id}`, {
-    method: "DELETE"
-  })
+console.log(id);
+    await fetch(`api/deleteItem/${id}`, {
+        method: "DELETE"
+    })
 }
 
 const columns = [
@@ -30,11 +30,9 @@ const columns = [
     {
         title: 'removeItem',
         key: 'removeItem',
-          render: (_, record) => (
-    <button onClick={() => handleDelete(record._id)}>
-      Delete
-    </button>
-    )
+        render: (_, record) => (
+            <button onClick={() => handleDelete(record._id)}>Delete</button>
+        )
     }
 ];
 
@@ -49,7 +47,7 @@ export default function Admin() {
         <div className='page-container '>
             <h1>Admin Page</h1>
             <Table columns={columns} dataSource={items} rowKey="_id" />
-            
+        
         </div>
     );
 }

@@ -34,16 +34,16 @@ export async function GET(request) {
 }
 
 export async function DELETE(request) {
-    const body = await request.json();
-    const id = body.id;
-    
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    console.log(id);
     if (!id) {
         return new NextResponse(JSON.stringify({ error: 'id is required' }), {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
     }
-    
+
     await deleteItem(id);
     return new NextResponse(null, { status: 204 });
 }
