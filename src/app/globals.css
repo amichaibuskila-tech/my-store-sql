@@ -34,6 +34,39 @@ a {
   }
 }
 
+.home-page {
+  min-height: 100vh;
+  padding: 20px;
+  background: radial-gradient(circle at top, #e8f0ff 0%, #ffffff 70%);
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+.home-page h1 {
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 0.35rem;
+  color: #1b3d8a;
+}
+
+.home-page p {
+  color: #333;
+  margin-bottom: 0.8rem;
+}
+
+.home-image {
+  border-radius: 16px;
+  border: 2px solid #c8d9f7;
+  box-shadow: 0 10px 22px rgba(20, 50, 120, 0.2);
+}
+
+.home-caption {
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #505f73;
+  margin-top: 0.65rem;
+}
 
 .page-container {
   min-height: 100vh;

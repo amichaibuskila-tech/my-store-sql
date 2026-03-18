@@ -1,0 +1,34 @@
+
+
+.pageContainer {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  text-align: center;
+}
+
+.imageWrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+}
+
+.homeImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.imageCaption {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  text-align: center;
+  color: #555;
+}
