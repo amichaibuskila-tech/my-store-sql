@@ -14,7 +14,6 @@ export default function Cart() {
 
             <div className="grid">
                 {
-
                     items.map(
                         (items, idx) => {
                             return <Card key={idx} data={items} />

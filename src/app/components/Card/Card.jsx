@@ -14,7 +14,6 @@ export function Card({ data }) {
             <h2>{data.title}</h2>
             <p>Price: {data.price}</p>
             <button className={styles.btn} onClick={AddToCart}>Add</button>
-
             { <p>{data.title}</p> }
         </div>
     );

@@ -8,22 +8,19 @@ import { getItemsByCategory } from '@/services/itemsClient.js';
 export default function SmartWatch() {
     const [items, setItems] = useState([]);
 
-    useEffect(() => { getItemsByCategory('electric').then(res => setItems(res)) }, [])
-
-
-
-
+    useEffect(() => { getItemsByCategory('watches').then(res => setItems(res)) }, [])
 
     return (
         <div className="smartwatch-page page-container">
             <h1>SmartWatch Page</h1>
-                        <div className="grid">
-                            {items.map(
-                                (item, idx) => {
-                                    return <Card key={idx} data={item} />
-                                }
-                            )}
-        </div>
+
+            <div className="grid">
+                {items.map(
+                    (item, idx) => {
+                        return <Card key={idx} data={item} />
+                    }
+                )}
+            </div>
         </div>
     );
 }

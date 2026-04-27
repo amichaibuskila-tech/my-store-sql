@@ -1,34 +1,130 @@
 
 
 .pageContainer {
-  max-width: 1024px;
+  min-height: calc(100vh - 160px);
+  width: min(1120px, 100%);
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 3rem 1.5rem 4rem;
+  display: grid;
+  gap: 2.5rem;
+}
+
+.hero {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  padding: 2.5rem;
+  border-radius: 32px;
+  background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 45%),
+    rgba(248, 250, 252, 0.95);
+  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.08);
+}
+
+.badge {
+  display: inline-flex;
+  padding: 0.6rem 1rem;
+  color: #1d4ed8;
+  background: #dbeafe;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.75rem, 4vw, 4.2rem);
+  line-height: 1.02;
+  margin-bottom: 1rem;
+  color: #0f172a;
+}
+
+.hero p {
+  max-width: 45rem;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: #334155;
+  margin-bottom: 1.75rem;
+}
+
+.ctaRow {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.header {
-  text-align: center;
+.ctaButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.6rem;
+  border-radius: 16px;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.imageWrapper {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+.ctaButton {
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  color: #f8fafc;
 }
 
-.homeImage {
+.secondaryButton {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+.ctaButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(59, 130, 246, 0.18);
+}
+
+.heroImageWrapper {
+  display: grid;
+  justify-items: center;
+}
+
+.heroImage {
   width: 100%;
-  height: auto;
-  display: block;
+  max-width: 540px;
+  border-radius: 28px;
   object-fit: cover;
+  box-shadow: 0 30px 70px rgba(15, 23, 42, 0.16);
 }
 
-.imageCaption {
-  margin-top: 0.75rem;
-  font-size: 0.95rem;
-  text-align: center;
-  color: #555;
+.features {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.featureCard {
+  padding: 2rem;
+  background: white;
+  border-radius: 28px;
+  box-shadow: 0 16px 50px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.featureCard h2 {
+  font-size: 1.35rem;
+  margin-bottom: 0.9rem;
+  color: #0f172a;
+}
+
+.featureCard p {
+  color: #475569;
+  line-height: 1.8;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
 }
