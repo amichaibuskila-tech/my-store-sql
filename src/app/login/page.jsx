@@ -133,25 +133,7 @@ export default function LoginPage() {
   return (
     <main className={styles.loginPage}>
       <section className={styles.loginCard}>
-        <div className={styles.tabs}>
-          <button
-            className={`${styles.tab} ${isSignIn ? styles.active : ''}`}
-            onClick={() => setIsSignIn(true)}
-          >
-            Sign In
-          </button>
-          <button
-            className={`${styles.tab} ${!isSignIn ? styles.active : ''}`}
-            onClick={() => setIsSignIn(false)}
-          >
-            Sign Up
-          </button>
-        </div>
-        <div className={styles.header}>
-          <span className={styles.badge}>Member access</span>
-          <h1>{isSignIn ? 'Sign in to your account' : 'Create your account'}</h1>
-          <p>{isSignIn ? 'Login to manage your cart, orders, and account details.' : 'Join us to start shopping and managing your account.'}</p>
-        </div>
+        <h2>Sigh in for discounts</h2>
             <button
               type="button"
               className={styles.googleButton}
