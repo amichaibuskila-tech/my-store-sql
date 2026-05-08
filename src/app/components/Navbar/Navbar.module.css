@@ -58,3 +58,23 @@
 .loginButton:hover {
   background: rgba(96, 165, 250, 0.28);
 }
+
+.userLabel {
+  color: #f8fafc;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.logoutButton {
+  padding: 0.75rem 1.1rem;
+  border-radius: 999px;
+  background: rgba(248, 113, 113, 0.18);
+  color: #fee2e2;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.logoutButton:hover {
+  background: rgba(248, 113, 113, 0.25);
+}

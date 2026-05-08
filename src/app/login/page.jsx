@@ -1,11 +1,134 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from '@/services/firebase';
+import useUserStore from '@/store/userStore';
 import styles from './page.module.css';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
+  const user = useUserStore((state) => state.user);
   const [isSignIn, setIsSignIn] = useState(true);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  useEffect(() => {
+    if (!user && typeof window !== 'undefined') {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        setUser(JSON.parse(stored));
+      }
+    }
+  }, [user, setUser]);
+
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage('');
+
+    if (!isSignIn && formData.password !== formData.confirmPassword) {
+      setMessage('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const endpoint = isSignIn ? '/api/auth/login' : '/api/auth/register';
+      const payload = isSignIn
+        ? { email: formData.email, password: formData.password }
+        : { name: formData.name, email: formData.email, password: formData.password };
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage(data.message);
+
+        if (isSignIn) {
+          const loggedInUser = data.user || {
+            uid: data.uid || '',
+            name: data.name || '',
+            email: formData.email,
+            photoURL: data.photoURL || '',
+          };
+          setUser(loggedInUser);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('user', JSON.stringify(loggedInUser));
+          }
+          router.push('/');
+        } else {
+          setIsSignIn(true);
+          setFormData({ ...formData, name: '', confirmPassword: '' });
+        }
+      } else {
+        setMessage(data.error);
+      }
+    } catch (error) {
+      setMessage('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const userData = {
+        uid: user.uid,
+        name: user.displayName || '',
+        email: user.email || '',
+        photoURL: user.photoURL || '',
+      };
+
+      setUser(userData);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
+
+      console.log('Google user:', userData);
+      setMessage(`Signed in as ${userData.name || userData.email}`);
+      router.push('/');
+    } catch (error) {
+      console.error('Google sign-in failed:', error);
+      setMessage(error.message || 'Google sign-in failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className={styles.loginPage}>
@@ -29,40 +152,14 @@ export default function LoginPage() {
           <h1>{isSignIn ? 'Sign in to your account' : 'Create your account'}</h1>
           <p>{isSignIn ? 'Login to manage your cart, orders, and account details.' : 'Join us to start shopping and managing your account.'}</p>
         </div>
-
-        <form className={styles.form}>
-          {!isSignIn && (
-            <label className={styles.field}>
-              <span>Full Name</span>
-              <input type="text" placeholder="Enter your full name" />
-            </label>
-          )}
-          <label className={styles.field}>
-            <span>Email address</span>
-            <input type="email" placeholder="you@example.com" />
-          </label>
-          <label className={styles.field}>
-            <span>Password</span>
-            <input type="password" placeholder="Enter your password" />
-          </label>
-          {!isSignIn && (
-            <label className={styles.field}>
-              <span>Confirm Password</span>
-              <input type="password" placeholder="Confirm your password" />
-            </label>
-          )}
-          <button type="submit" className={styles.submitButton}>
-            {isSignIn ? 'Sign in' : 'Sign up'}
-          </button>
-        </form>
-
-        <p className={styles.footerText}>
-          {isSignIn ? (
-            <>New here? <button onClick={() => setIsSignIn(false)} className={styles.linkButton}>Create an account</button></>
-          ) : (
-            <>Already have an account? <button onClick={() => setIsSignIn(true)} className={styles.linkButton}>Sign in</button></>
-          )}
-        </p>
+            <button
+              type="button"
+              className={styles.googleButton}
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+            >
+              {loading ? 'Opening Google…' : 'Continue with Google'}
+            </button>
       </section>
     </main>
   );
