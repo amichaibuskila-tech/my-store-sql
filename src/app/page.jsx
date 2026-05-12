@@ -1,4 +1,5 @@
 
+import Chat from "@/app/components/ChatBot/ChatBot.jsx";
 
 import styles from "./page.module.css";
 import React from 'react';
@@ -22,6 +23,8 @@ export default function Home() {
         </div>
       </section>
 
+      <Chat />
+
       <section className={styles.features}>
         <article className={styles.featureCard}>
           <h2>Best sellers</h2>
@@ -36,6 +39,7 @@ export default function Home() {
           <p>Reach out anytime for help, product advice, or order updates.</p>
         </article>
       </section>
+
     </main>
   );
 }
