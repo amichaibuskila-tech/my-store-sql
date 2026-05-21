@@ -114,14 +114,34 @@ export default function LoginPage() {
         photoURL: user.photoURL || '',
       };
 
-      setUser(userData);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('user', JSON.stringify(userData));
-      }
+      // Send Google user info to server to find-or-create in MongoDB
+      try {
+        const resp = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: user.uid, name: user.displayName, email: user.email, photoURL: user.photoURL }),
+        });
 
-      console.log('Google user:', userData);
-      setMessage(`Signed in as ${userData.name || userData.email}`);
-      router.push('/');
+        const data = await resp.json();
+        const savedUser = (data && data.user) ? data.user : userData;
+
+        setUser(savedUser);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(savedUser));
+        }
+
+        console.log('Google user saved:', savedUser);
+        setMessage(`Signed in as ${savedUser.name || savedUser.email}`);
+        router.push('/');
+      } catch (err) {
+        console.error('Failed saving Google user:', err);
+        // fallback to local-only user
+        setUser(userData);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(userData));
+        }
+        router.push('/');
+      }
     } catch (error) {
       console.error('Google sign-in failed:', error);
       setMessage(error.message || 'Google sign-in failed.');

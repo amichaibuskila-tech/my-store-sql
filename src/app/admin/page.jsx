@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Table, Form, Input, InputNumber, Button, Modal, message } from 'antd';
+import { Table, Form, Input, InputNumber, Button, Modal, message, Tabs } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 export default function Admin() {
@@ -9,6 +9,7 @@ export default function Admin() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [users, setUsers] = useState([]);
 
     const handleDelete = async (id) => {
         console.log(id);
@@ -17,6 +18,22 @@ export default function Admin() {
         })
 
         setItems(prevItems => prevItems.filter(item => item._id !== id))
+    }
+
+    const handleDeleteUser = async (id) => {
+        try {
+            const res = await fetch(`/api/users?id=${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                setUsers(prev => prev.filter(u => String(u._id) !== String(id)));
+                message.success('User deleted');
+            } else {
+                const err = await res.json();
+                message.error(err.error || 'Failed to delete user');
+            }
+        } catch (err) {
+            console.error(err);
+            message.error('Failed to delete user');
+        }
     }
 
     const handleAddItem = async (values) => {
@@ -75,10 +92,20 @@ export default function Admin() {
         }
     ];
 
+    const userColumns = [
+        { title: 'Name', dataIndex: 'name', key: 'name' },
+        { title: 'Email', dataIndex: 'email', key: 'email' },
+        { title: 'Provider', dataIndex: 'provider', key: 'provider' },
+        { title: 'Photo', dataIndex: 'photoURL', key: 'photoURL', render: (url) => url ? <img src={url} alt="avatar" style={{ width: 40, height: 40, borderRadius: 20 }} /> : null },
+        { title: 'Created', dataIndex: 'createdAt', key: 'createdAt', render: (v) => v ? new Date(v).toLocaleString() : '' },
+        { title: 'Actions', key: 'actions', render: (_, record) => (<button onClick={() => handleDeleteUser(record._id)}>Delete</button>) }
+    ];
+
 
 
     useEffect(() => {
         fetch('/api/getAllItems').then(res => res.json()).then(data => setItems(data))
+        fetch('/api/users').then(res => res.json()).then(data => setUsers(data))
     }, [])
 
     return (
@@ -93,7 +120,21 @@ export default function Admin() {
                     Add New Item
                 </Button>
             </div>
-            <Table columns={columns} dataSource={items} rowKey="_id" />
+            <Tabs
+                defaultActiveKey="items"
+                items={[
+                    {
+                        key: 'items',
+                        label: 'Items',
+                        children: <Table columns={columns} dataSource={items} rowKey="_id" />,
+                    },
+                    {
+                        key: 'users',
+                        label: 'Users',
+                        children: <Table columns={userColumns} dataSource={users} rowKey="_id" />,
+                    }
+                ]}
+            />
             
             <Modal
                 title="Add New Item"
