@@ -1,75 +1,70 @@
-import clientPromise from './mongo';
-import { ObjectId } from 'mongodb';
-
-const DB_NAME = 'main';
-const COLLECTION_NAME = 'users';
+import db from './sqlite';
 
 export async function getAllUsers() {
-  const client = await clientPromise;
-  const db = client.db(DB_NAME);
-  const collection = db.collection(COLLECTION_NAME);
-  return collection.find().toArray();
+  return db.prepare('SELECT * FROM users').all();
 }
 
 export async function getUsersByEmail(email) {
-  const client = await clientPromise;
-  const db = client.db(DB_NAME);
-  const collection = db.collection(COLLECTION_NAME);
-  return collection.find({ email: email }).toArray();
+  const row = db.prepare('SELECT * FROM users WHERE email = ?').all(email);
+  return row;
 }
 
 export async function createUser(user) {
-  const client = await clientPromise;
-  const db = client.db(DB_NAME);
-  const collection = db.collection(COLLECTION_NAME);
-  return collection.insertOne(user);
+  const now = new Date().toISOString();
+  const stmt = db.prepare(
+    `INSERT INTO users (name, email, password, photoURL, googleId, provider, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+  const info = stmt.run(
+    user.name || '',
+    user.email,
+    user.password || null,
+    user.photoURL || user.photo || null,
+    user.googleId || user.uid || null,
+    user.provider || null,
+    now,
+    now
+  );
+  return { lastInsertRowid: info.lastInsertRowid };
 }
 
 export async function getUsersByPassword(password) {
-  const client = await clientPromise;
-  const db = client.db(DB_NAME);
-  const collection = db.collection(COLLECTION_NAME);
-  return collection.find({ password: password }).toArray();
+  return db.prepare('SELECT * FROM users WHERE password = ?').all(password);
 }
 
 export async function deleteUser(id) {
-  const client = await clientPromise;
-  const db = client.db(DB_NAME);
-  const collection = db.collection(COLLECTION_NAME);
-  return collection.deleteOne({ _id: new ObjectId(id) });
+  const stmt = db.prepare('DELETE FROM users WHERE id = ?');
+  return stmt.run(id);
 }
 
 export async function getUserByEmail(email) {
-  const client = await clientPromise;
-  const db = client.db(DB_NAME);
-  const collection = db.collection(COLLECTION_NAME);
-  return collection.findOne({ email: email });
+  return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 }
 
 export async function upsertUserByEmail(user) {
-  const client = await clientPromise;
-  const db = client.db(DB_NAME);
-  const collection = db.collection(COLLECTION_NAME);
-
-  const update = {
-    $set: {
-      name: user.name || '',
-      email: user.email,
-      photoURL: user.photoURL || user.photo || '',
-      googleId: user.googleId || user.uid || null,
-      provider: user.provider || null,
-      updatedAt: new Date(),
-    },
-    $setOnInsert: {
-      createdAt: new Date(),
-    },
-  };
-
-  const res = await collection.findOneAndUpdate(
-    { email: user.email },
-    update,
-    { upsert: true, returnDocument: 'after' }
+  const now = new Date().toISOString();
+  const stmt = db.prepare(
+    `INSERT INTO users (name, email, password, photoURL, googleId, provider, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(email) DO UPDATE SET
+       name=excluded.name,
+       password=COALESCE(excluded.password, users.password),
+       photoURL=excluded.photoURL,
+       googleId=excluded.googleId,
+       provider=excluded.provider,
+       updatedAt=excluded.updatedAt`
   );
 
-  return res.value;
+  stmt.run(
+    user.name || '',
+    user.email,
+    user.password || null,
+    user.photoURL || user.photo || null,
+    user.googleId || user.uid || null,
+    user.provider || null,
+    now,
+    now
+  );
+
+  return db.prepare('SELECT * FROM users WHERE email = ?').get(user.email);
 }

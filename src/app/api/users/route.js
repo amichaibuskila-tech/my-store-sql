@@ -1,4 +1,4 @@
-import { getUsersByEmail, getAllUsers, createUser, getUsersByPassword } from '@/services/users';
+import { getUsersByEmail, getAllUsers, createUser, getUsersByPassword, deleteUser } from '@/services/users';
 import { NextResponse } from 'next/server';
 
 // export async function GET() {
@@ -43,10 +43,9 @@ export async function DELETE(request) {
             headers: { 'Content-Type': 'application/json' }
         });
     }
-
     const res = await deleteUser(id);
     console.log(res);
-    if (res.deletedCount === 0) {
+    if (!res || res.changes === 0) {
         return new NextResponse(JSON.stringify({ error: 'User not found' }), {
             status: 404,
             headers: { 'Content-Type': 'application/json' }
@@ -69,7 +68,7 @@ export async function POST(request) {
         }
 
         const res = await createUser(body);
-        return new NextResponse(JSON.stringify({ message: 'User created successfully', id: res.insertedId }), {
+        return new NextResponse(JSON.stringify({ message: 'User created successfully', id: res.lastInsertRowid }), {
             status: 201,
             headers: { 'Content-Type': 'application/json' }
         });

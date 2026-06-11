@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Table, Form, Input, InputNumber, Button, Modal, message, Tabs } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -11,20 +11,22 @@ export default function Admin() {
     const [loading, setLoading] = useState(false);
     const [users, setUsers] = useState([]);
 
+    const fileInputRef = useRef(null);
+
     const handleDelete = async (id) => {
         console.log(id);
         await fetch(`api/items?id=${id}`, {
             method: "DELETE"
         })
 
-        setItems(prevItems => prevItems.filter(item => item._id !== id))
+        setItems(prevItems => prevItems.filter(item => item.id !== id))
     }
 
     const handleDeleteUser = async (id) => {
         try {
             const res = await fetch(`/api/users?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
-                setUsers(prev => prev.filter(u => String(u._id) !== String(id)));
+                setUsers(prev => prev.filter(u => String(u.id) !== String(id)));
                 message.success('User deleted');
             } else {
                 const err = await res.json();
@@ -66,6 +68,44 @@ export default function Admin() {
         }
     }
 
+    const handleImportCSV = async (file) => {
+        if (!file) return;
+        const text = await file.text();
+        // simple CSV parser: first line header, comma separated
+        const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        if (lines.length <= 1) {
+            message.error('CSV must include a header and at least one row');
+            return;
+        }
+        const headers = lines[0].split(',').map(h => h.trim());
+        const rows = lines.slice(1).map(line => {
+            const cols = line.split(',');
+            const obj = {};
+            for (let i = 0; i < headers.length; i++) {
+                obj[headers[i]] = cols[i] ? cols[i].trim() : '';
+            }
+            return obj;
+        });
+
+        try {
+            const res = await fetch('/api/items/bulk', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(rows),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                message.success(`Inserted ${data.inserted} items`);
+                fetch('/api/getAllItems').then(r => r.json()).then(d => setItems(d));
+            } else {
+                message.error(data.error || 'Failed to import CSV');
+            }
+        } catch (err) {
+            console.error(err);
+            message.error('Import failed');
+        }
+    }
+
     const columns = [
 
         {
@@ -87,7 +127,7 @@ export default function Admin() {
             title: 'removeItem',
             key: 'removeItem',
             render: (_, record) => (
-                <button onClick={() => handleDelete(record._id)}>Delete</button>
+                <button onClick={() => handleDelete(record.id)}>Delete</button>
             )
         }
     ];
@@ -98,7 +138,7 @@ export default function Admin() {
         { title: 'Provider', dataIndex: 'provider', key: 'provider' },
         { title: 'Photo', dataIndex: 'photoURL', key: 'photoURL', render: (url) => url ? <img src={url} alt="avatar" style={{ width: 40, height: 40, borderRadius: 20 }} /> : null },
         { title: 'Created', dataIndex: 'createdAt', key: 'createdAt', render: (v) => v ? new Date(v).toLocaleString() : '' },
-        { title: 'Actions', key: 'actions', render: (_, record) => (<button onClick={() => handleDeleteUser(record._id)}>Delete</button>) }
+        { title: 'Actions', key: 'actions', render: (_, record) => (<button onClick={() => handleDeleteUser(record.id)}>Delete</button>) }
     ];
 
 
@@ -119,6 +159,20 @@ export default function Admin() {
                 >
                     Add New Item
                 </Button>
+                <div style={{ marginLeft: 12, display: 'inline-block' }}>
+                    <input
+                        type="file"
+                        accept=".csv"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                            const f = e.target.files && e.target.files[0];
+                            if (f) handleImportCSV(f);
+                            e.target.value = null;
+                        }}
+                    />
+                    <Button style={{ marginLeft: 8 }} onClick={() => fileInputRef.current && fileInputRef.current.click()}>Import CSV</Button>
+                </div>
             </div>
             <Tabs
                 defaultActiveKey="items"
@@ -126,12 +180,12 @@ export default function Admin() {
                     {
                         key: 'items',
                         label: 'Items',
-                        children: <Table columns={columns} dataSource={items} rowKey="_id" />,
+                        children: <Table columns={columns} dataSource={items} rowKey="id" />,
                     },
                     {
                         key: 'users',
                         label: 'Users',
-                        children: <Table columns={userColumns} dataSource={users} rowKey="_id" />,
+                        children: <Table columns={userColumns} dataSource={users} rowKey="id" />,
                     }
                 ]}
             />

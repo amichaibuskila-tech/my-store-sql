@@ -13,14 +13,14 @@ export async function POST(request) {
     }
 
     const users = await getUsersByEmail(email);
-    if (!users || users.length === 0) {
+    const user = Array.isArray(users) ? users[0] : users;
+    if (!user) {
       return new NextResponse(JSON.stringify({ error: 'Invalid credentials' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const user = users[0];
     // Note: passwords are stored in plaintext in this project (consider hashing)
     if (user.password !== password) {
       return new NextResponse(JSON.stringify({ error: 'Invalid credentials' }), {
@@ -30,7 +30,7 @@ export async function POST(request) {
     }
 
     const safeUser = {
-      id: user._id,
+      id: user.id,
       name: user.name || '',
       email: user.email,
       photoURL: user.photoURL || user.photo || '',

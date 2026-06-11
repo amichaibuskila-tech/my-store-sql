@@ -8,7 +8,7 @@ import { getItemsByCategory } from '@/services/itemsClient.js';
 export default function SmartWatch() {
     const [items, setItems] = useState([]);
 
-    useEffect(() => { getItemsByCategory('watches').then(res => setItems(res)) }, [])
+    useEffect(() => { getItemsByCategory('smartwatch').then(res => setItems(res)) }, [])
 
     return (
         <div className="smartwatch-page page-container">

@@ -8,7 +8,7 @@ import { useCustomHook } from '@/hooks/useMyState.js';
 export default function SmartPhone() {
     const [items, setItems] = useState([]);
 
-    useEffect(() => { getItemsByCategory('phones').then(res => setItems(res)) }, [])
+    useEffect(() => { getItemsByCategory('smartphone').then(res => setItems(res)) }, [])
 
     return (
         <div className="smartphone-page page-container">

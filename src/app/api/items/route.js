@@ -46,7 +46,7 @@ export async function DELETE(request) {
 
     const res = await deleteItem(id);
     console.log(res);
-    if (res.deletedCount === 0) {
+    if (!res || res.changes === 0) {
         return new NextResponse(JSON.stringify({ error: 'Item not found' }), {
             status: 404,
             headers: { 'Content-Type': 'application/json' }
@@ -69,7 +69,7 @@ export async function POST(request) {
         }
 
         const res = await createItem(body);
-        return new NextResponse(JSON.stringify({ message: 'Item created successfully', id: res.insertedId }), {
+        return new NextResponse(JSON.stringify({ message: 'Item created successfully', id: res.lastInsertRowid }), {
             status: 201,
             headers: { 'Content-Type': 'application/json' }
         });

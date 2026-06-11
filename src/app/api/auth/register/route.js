@@ -23,7 +23,7 @@ export async function POST(request) {
 
     const res = await createUser({ name: name || '', email, password });
 
-    return new NextResponse(JSON.stringify({ message: 'User created successfully', id: res.insertedId }), {
+    return new NextResponse(JSON.stringify({ message: 'User created successfully', id: res.lastInsertRowid }), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     });
